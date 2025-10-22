@@ -177,7 +177,7 @@
 
 	<script>
 		// CRITICAL: This URL is confirmed to match your latest Web App deployment.
-		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxO3bSGyW1WRudNDNHstd4-_4WKREMaqm5R9JXMfKW8siyA70BYCL3kAPeJBLyamCLV/exec";
+		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfZ-SCDfB7-6HKznNuCDcTFHJR29UX5Az1CTcy4Ioq2f-AwFSdW1RI0zKdgCErXnjk/exec";
 
 		const serviceEl = document.getElementById("service");
 		const dateEl = document.getElementById("date");
@@ -270,7 +270,7 @@
 			.catch(err => {
 				// FINAL Diagnostic reporting
 				console.error("Fetch Error: Communication Failed. The booking request failed to reach the server.", err.message, err.stack);
-				alert("🛑 Failed to communicate with the booking server. Please check the browser console (F12) for the exact network error.");
+				alert("🛑 Failed to communicate with the booking server. Please contact Fafa.");
 			});
 		}
 
@@ -303,5 +303,6 @@ END:VCALENDAR`;
 	</script>
 </body>
 </html>
+
 
 
