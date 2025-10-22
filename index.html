@@ -42,7 +42,7 @@
 		}
 
 		#booking-section button,
-		#booking-section a.button { 
+		#booking-section a.button {
 			background: #f06292;
 			color: white;
 			border: none;
@@ -54,14 +54,14 @@
 			border-radius: 6px;
 			font-size: 1rem;
 			text-align: center;
-			display: block; 
-			text-decoration: none; 
+			display: block;
+			text-decoration: none;
 		}
 		#booking-section button:hover,
 		#booking-section a.button:hover {
 			background: #e04579;
 		}
-		.hidden { display: none !important; } 
+		.hidden { display: none !important; }
 		.summary {
 			background: #fdf2f6;
 			padding: 1rem;
@@ -176,8 +176,8 @@
 	<script src="assets/js/main.js"></script>
 
 	<script>
-
-		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZxjb2pKjDF8KTCBAkajN0c0PG0U53xN0g_RuGKmuvkjF5-ckZAThSHzrDMmKUX6pK/exec"; 
+		// CRITICAL: This URL is confirmed to match your latest Web App deployment.
+		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZxjb2pKjDF8KTCBAkajN0c0PG0U53xN0g_RuGKmuvkjF5-ckZAThSHzrDMmKUX6pK/exec";
 
 		const serviceEl = document.getElementById("service");
 		const dateEl = document.getElementById("date");
@@ -194,17 +194,17 @@
 			let isValid = true;
 			let currentStepEl = document.getElementById(`step${stepNumber - 1}`);
 
-			if (stepNumber === 2) { 
+			if (stepNumber === 2) {
 				if (!serviceEl.value) {
 					alert("Please select a service.");
 					isValid = false;
 				}
-			} else if (stepNumber === 3) { 
+			} else if (stepNumber === 3) {
 				if (!dateEl.value || !timeEl.value) {
 					alert("Please select a date and time.");
 					isValid = false;
 				}
-			} 
+			}
 
 			if (isValid) {
 				currentStepEl.classList.add("hidden");
@@ -239,38 +239,39 @@
 
 			// --- 1. Google Calendar Link Generation ---
 			const start = new Date(`${date}T${time}`);
-			const end = new Date(start.getTime() + APPOINTMENT_DURATION_MINUTES * 60 * 1000); 
-			
+			const end = new Date(start.getTime() + APPOINTMENT_DURATION_MINUTES * 60 * 1000);
+
 			// Format date string for Google Calendar URL
-			const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "");
+			const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "").split('.')[0] + (d.getTimezoneOffset() === 0 ? 'Z' : '');
 
 			document.getElementById("googleLink").href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service)}&dates=${formatDate(start)}/${formatDate(end)}&details=${encodeURIComponent(notes)}&location=Houston`;
 
 			// --- 2. Send Booking to Google Apps Script (Backend) ---
+			document.getElementById("step4").classList.add("hidden");
+			document.getElementById("confirmation").classList.remove("hidden"); // Transition immediately while fetching
+
 			fetch(SCRIPT_URL, {
 				method: "POST",
 				// CRITICAL: Ensure this header is correct
-				headers: { "Content-Type": "application/json" }, 
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ service, date, time, name, notes })
 			})
 			.then(res => res.json())
 			.then(data => {
 				if (data.status === "success") {
-					console.log("Booking added to spreadsheet successfully!");
+					console.log("Booking successfully processed by server.");
+					// Success is already displayed via the early transition
 				} else {
-					console.error("Backend Error:", data);
+					console.error("Backend Error: Server responded with status 'error'.", data);
 					// Alerting for server error, but still confirming client-side
-					alert("Booking submitted, but there was a server error. Please contact Fafa.");
+					alert(`Booking submitted, but the server reported an error: ${data.message || 'Unknown error'}. Please contact Fafa.`);
 				}
 			})
-			.catch(err => { 
-				console.error("Fetch Error:", err); 
-				alert("Failed to communicate with the booking server. Please contact Fafa."); 
+			.catch(err => {
+				// FINAL Diagnostic reporting
+				console.error("Fetch Error: Communication Failed. The booking request failed to reach the server.", err.message, err.stack);
+				alert("🛑 Failed to communicate with the booking server. Please check the browser console (F12) for the exact network error.");
 			});
-
-			// --- 3. Transition to Confirmation Step ---
-			document.getElementById("step4").classList.add("hidden");
-			document.getElementById("confirmation").classList.remove("hidden");
 		}
 
 		function generateICS() {
@@ -282,7 +283,7 @@
 
 			const start = new Date(`${date}T${time}`);
 			const end = new Date(start.getTime() + APPOINTMENT_DURATION_MINUTES * 60 * 1000);
-			
+
 			const ics = `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -302,7 +303,3 @@ END:VCALENDAR`;
 	</script>
 </body>
 </html>
-
-
-
-
