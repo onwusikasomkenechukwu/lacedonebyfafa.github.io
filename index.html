@@ -281,7 +281,7 @@
 			// --- 1. Google Calendar Link Generation ---
 			const start = new Date(`${date}T${time}`);
 			// Assuming a 60-minute appointment
-			const end = new Date(start.getTime() + 60 * 60 * 1000);
+			const end = new Date(start.getTime() + 120 * 60 * 1000);
 			const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "");
 
 			document.getElementById("googleLink").href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service)}&dates=${formatDate(start)}/${formatDate(end)}&details=${encodeURIComponent(notes)}&location=Houston`;
@@ -343,5 +343,6 @@ END:VCALENDAR`;
 	</script>
 </body>
 </html>
+
 
 
