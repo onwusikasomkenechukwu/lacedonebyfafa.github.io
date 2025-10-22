@@ -30,21 +30,10 @@
 			color: #333;
 		}
 		#booking-section select,
-		#booking-section input:not([type="date"]):not([type="time"]):not([type="checkbox"]):not([type="radio"]),
+		#booking-section input:not([type="checkbox"]):not([type="radio"]),
 		#booking-section textarea {
-			/* Standard input styling for most inputs */
 			width: 100%;
-			padding: 0.8rem;
-			border: 1px solid #ccc;
-			border-radius: 6px;
-			margin-top: 0.5rem;
-			font-size: 1rem;
-		}
-		/* Specific styling for Date and Time inputs to ensure they take full width */
-		#booking-section input[type="date"],
-		#booking-section input[type="time"] {
-			width: 100%;
-			box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+			box-sizing: border-box;
 			padding: 0.8rem;
 			border: 1px solid #ccc;
 			border-radius: 6px;
@@ -53,27 +42,26 @@
 		}
 
 		#booking-section button,
-		#booking-section a.button { /* Style for buttons and the link styled as a button */
+		#booking-section a.button { 
 			background: #f06292;
 			color: white;
 			border: none;
 			cursor: pointer;
 			transition: background 0.3s;
 			margin-top: 1.5rem;
-			/* Shared button styling */
 			width: 100%;
 			padding: 0.8rem;
 			border-radius: 6px;
 			font-size: 1rem;
 			text-align: center;
-			display: block; /* Ensure the link takes full width like a button */
-			text-decoration: none; /* Remove underline from the link */
+			display: block; 
+			text-decoration: none; 
 		}
 		#booking-section button:hover,
 		#booking-section a.button:hover {
 			background: #e04579;
 		}
-		.hidden { display: none !important; } /* Added !important for safety */
+		.hidden { display: none !important; } 
 		.summary {
 			background: #fdf2f6;
 			padding: 1rem;
@@ -124,30 +112,6 @@
 			</header>
 		</section>
 
-		<header>
-			<h3><strong>STYLES</strong></h3>
-		</header>
-		<section class="carousel">
-			<div class="reel">
-				<article><a href="#" class="image featured"><img src="images/lace1.jpg" alt="Lace Install Style 1" /></a></article>
-				<article><a href="#" class="image featured"><img src="images/lace2.jpg" alt="Lace Install Style 2" /></a></article>
-				<article><a href="#" class="image featured"><img src="images/lace3.jpg" alt="Lace Install Style 3" /></a></article>
-			</div>
-		</section>
-
-		<div class="wrapper style2">
-			<article id="main" class="container special">
-				<header>
-					<p>
-						Get that perfect lace melt with Houston's finest — book your personalized install today.
-					</p>
-				</header>
-				<footer>
-					<a href="#booking-section" class="button scrolly">BOOK APPOINTMENT!</a>
-				</footer>
-			</article>
-		</div>
-
 		<section id="booking-section">
 			<h2>Book Your Appointment</h2>
 
@@ -156,7 +120,7 @@
 				<select id="service">
 					<option value="">-- Choose a service --</option>
 					<option value="Frontal Install - $85">Frontal Install - $85</option>
-					</select>
+				</select>
 				<button onclick="nextStep(2)">Next →</button>
 			</div>
 
@@ -213,7 +177,7 @@
 
 	<script>
 
-		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtz96mlH8A6LjEILa1zE95vmal8Mcd16fRaiq-0--KjoKbTdN2zfktNsuA_h3U8ASF/exec"; 
+		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzsKSKzxr7r43LLGoqNLlckfLzvm0AOlGltaJVDwlFZjSr6_VnyZEqgxYc-vu871Y9iw/exec"; 
 
 		const serviceEl = document.getElementById("service");
 		const dateEl = document.getElementById("date");
@@ -222,33 +186,28 @@
 		const notesEl = document.getElementById("notes");
 		const summaryDiv = document.getElementById("summary");
 
-		function nextStep(stepNumber) {
-			// Logic for validation before moving to the next step
-			let isValid = true;
-			let currentStepEl;
+		// Global variable for appointment duration (2 hours)
+		const APPOINTMENT_DURATION_MINUTES = 120;
 
-			switch (stepNumber) {
-				case 2: // Going from Step 1 to Step 2
-					currentStepEl = document.getElementById("step1");
-					if (!serviceEl.value) {
-						alert("Please select a service.");
-						isValid = false;
-					}
-					break;
-				case 3: // Going from Step 2 to Step 3
-					currentStepEl = document.getElementById("step2");
-					if (!dateEl.value || !timeEl.value) {
-						alert("Please select a date and time.");
-						isValid = false;
-					}
-					break;
-				// No need for a case for step 4, as showSummary handles that transition
-			}
+
+		function nextStep(stepNumber) {
+			let isValid = true;
+			let currentStepEl = document.getElementById(`step${stepNumber - 1}`);
+
+			if (stepNumber === 2) { 
+				if (!serviceEl.value) {
+					alert("Please select a service.");
+					isValid = false;
+				}
+			} else if (stepNumber === 3) { 
+				if (!dateEl.value || !timeEl.value) {
+					alert("Please select a date and time.");
+					isValid = false;
+				}
+			} 
 
 			if (isValid) {
-				// Hide current step
 				currentStepEl.classList.add("hidden");
-				// Show next step
 				document.getElementById(`step${stepNumber}`).classList.remove("hidden");
 			}
 		}
@@ -280,8 +239,9 @@
 
 			// --- 1. Google Calendar Link Generation ---
 			const start = new Date(`${date}T${time}`);
-			// Assuming a 60-minute appointment
-			const end = new Date(start.getTime() + 120 * 60 * 1000);
+			const end = new Date(start.getTime() + APPOINTMENT_DURATION_MINUTES * 60 * 1000); 
+			
+			// Format date string for Google Calendar URL
 			const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "");
 
 			document.getElementById("googleLink").href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service)}&dates=${formatDate(start)}/${formatDate(end)}&details=${encodeURIComponent(notes)}&location=Houston`;
@@ -289,25 +249,23 @@
 			// --- 2. Send Booking to Google Apps Script (Backend) ---
 			fetch(SCRIPT_URL, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				// CRITICAL: Ensure this header is correct
+				headers: { "Content-Type": "application/json" }, 
 				body: JSON.stringify({ service, date, time, name, notes })
 			})
 			.then(res => res.json())
 			.then(data => {
-				// Success or error handling for the backend save
 				if (data.status === "success") {
 					console.log("Booking added to spreadsheet successfully!");
 				} else {
 					console.error("Backend Error:", data);
-					// NOTE: Alerting the user about the backend error
-					// while still confirming the appointment and providing calendar links
-					// as the user's primary action (booking) was completed client-side.
-					alert("Note: There was an issue saving your booking details, but you can still use the calendar links.");
+					// Alerting for server error, but still confirming client-side
+					alert("Booking submitted, but there was a server error. Please contact Fafa.");
 				}
 			})
-			.catch(err => {
-				console.error("Fetch Error:", err);
-				alert("Note: Failed to communicate with the booking server. Please contact Fafa.");
+			.catch(err => { 
+				console.error("Fetch Error:", err); 
+				alert("Failed to communicate with the booking server. Please contact Fafa."); 
 			});
 
 			// --- 3. Transition to Confirmation Step ---
@@ -322,8 +280,9 @@
 			const time = timeEl.value;
 			const notes = notesEl.value;
 
-			const startDateTime = new Date(`${date}T${time}:00Z`);
-			const end = new Date(start.getTime() + 120 * 60 * 1000); // 120 minutes duration
+			const start = new Date(`${date}T${time}`);
+			const end = new Date(start.getTime() + APPOINTMENT_DURATION_MINUTES * 60 * 1000);
+			
 			const ics = `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -343,9 +302,3 @@ END:VCALENDAR`;
 	</script>
 </body>
 </html>
-
-
-
-
-
-
