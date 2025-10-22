@@ -209,20 +209,69 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Custom Booking Page</title>
+	<style>
+		body { font-family: 'Poppins', sans-serif; background: #f9fafc; margin: 0; padding: 0; }
+		.container { max-width: 600px; margin: 50px auto; background: #fff; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+		.hidden { display: none; }
+		.btn { background: #0078ff; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 10px; }
+		.btn:hover { background: #005bcc; }
+	</style>
+</head>
+<body>
+
+	<div class="container">
+		<h2>Book an Appointment</h2>
+
+		<!-- Step 1 -->
+		<div id="step1">
+			<label>Service:</label><br>
+			<input id="service" type="text" placeholder="Service Name"><br><br>
+			<label>Date:</label><br>
+			<input id="date" type="date"><br><br>
+			<label>Time:</label><br>
+			<input id="time" type="time"><br><br>
+			<label>Your Name:</label><br>
+			<input id="name" type="text"><br><br>
+			<label>Notes:</label><br>
+			<textarea id="notes" placeholder="Optional"></textarea><br><br>
+			<button class="btn" onclick="showSummary()">Next</button>
+		</div>
+
+		<!-- Step 2 -->
+		<div id="step4" class="hidden">
+			<h3>Confirm Details</h3>
+			<div id="summary"></div>
+			<button class="btn" onclick="generateCalendarLinks()">Confirm Booking</button>
+		</div>
+
+		<!-- Confirmation -->
+		<div id="confirmation" class="hidden"></div>
+	</div>
+
 	<!-- Booking Logic -->
 	<script>
+		const serviceEl = document.getElementById("service"),
+			  dateEl = document.getElementById("date"),
+			  timeEl = document.getElementById("time"),
+			  nameEl = document.getElementById("name"),
+			  notesEl = document.getElementById("notes"),
+			  summaryDiv = document.getElementById("summary");
+
 		function nextStep(step) {
-			for (let i = 1; i <= 4; i++) document.getElementById("step" + i).classList.add("hidden");
+			document.querySelectorAll(".container > div").forEach(div => div.classList.add("hidden"));
 			document.getElementById("step" + step).classList.remove("hidden");
 		}
 
 		function showSummary() {
-			const service = serviceEl.value, date = dateEl.value, time = timeEl.value,
-				  name = nameEl.value, notes = notesEl.value;
-			if (!service || !date || !time || !name) {
-				alert("Please fill all required fields before continuing.");
-				return;
-			}
+			const service = serviceEl.value, date = dateEl.value, time = timeEl.value, name = nameEl.value, notes = notesEl.value;
+			if (!service || !date || !time || !name) return alert("Please fill all required fields.");
+
 			summaryDiv.innerHTML = `
 				<p><strong>Service:</strong> ${service}</p>
 				<p><strong>Date:</strong> ${date}</p>
@@ -232,55 +281,45 @@
 			nextStep(4);
 		}
 
-		function generateCalendarLinks() {
+		async function generateCalendarLinks() {
 			const service = serviceEl.value;
 			const date = dateEl.value;
 			const time = timeEl.value;
+			const name = nameEl.value;
 			const notes = notesEl.value;
 
 			const start = new Date(`${date}T${time}:00`);
 			const end = new Date(start.getTime() + 60 * 60 * 1000);
 			const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "");
 
-			const googleLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service)}&dates=${formatDate(start)}/${formatDate(end)}&details=${encodeURIComponent(notes)}&location=Houston`;
-			document.getElementById("googleLink").href = googleLink;
+			// ✅ Google Apps Script Endpoint
+			const endpoint = "https://script.google.com/macros/s/AKfycbw7o3Em1cjTU_PhVCVinuJrB4j4UviVKVsV9d7JsyvZfARpvOCkGX4bAh6NH0hcHwqXsw/exec";
 
-			for (let i = 1; i <= 4; i++) document.getElementById("step" + i).classList.add("hidden");
-			document.getElementById("confirmation").classList.remove("hidden");
+			// Send booking data to Google Apps Script to add to Calendar
+			try {
+				const response = await fetch(endpoint, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						service, date, time, name, notes
+					})
+				});
+				const result = await response.text();
+
+				// Show confirmation + optional calendar buttons
+				document.getElementById("confirmation").innerHTML = `
+					<h3>✅ Appointment Confirmed!</h3>
+					<p>${service} with ${name} on ${date} at ${time}</p>
+					<p>${result}</p>
+					<a href="https://calendar.google.com/" target="_blank" class="btn">Open Google Calendar</a>
+				`;
+
+				nextStep("confirmation");
+			} catch (error) {
+				alert("Error adding booking to calendar: " + error.message);
+			}
 		}
-
-		function generateICS() {
-			const service = serviceEl.value;
-			const date = dateEl.value;
-			const time = timeEl.value;
-			const notes = notesEl.value;
-			const start = new Date(`${date}T${time}:00`);
-			const end = new Date(start.getTime() + 60 * 60 * 1000);
-			const icsData = `
-BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${service}
-DTSTART:${start.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTEND:${end.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DESCRIPTION:${notes}
-END:VEVENT
-END:VCALENDAR
-`;
-			const blob = new Blob([icsData], { type: "text/calendar" });
-			const link = document.createElement("a");
-			link.href = URL.createObjectURL(blob);
-			link.download = "appointment.ics";
-			link.click();
-		}
-
-		// Cache elements
-		const serviceEl = document.getElementById("service"),
-			  dateEl = document.getElementById("date"),
-			  timeEl = document.getElementById("time"),
-			  nameEl = document.getElementById("name"),
-			  notesEl = document.getElementById("notes"),
-			  summaryDiv = document.getElementById("summary");
 	</script>
 </body>
 </html>
+
