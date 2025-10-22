@@ -30,9 +30,9 @@
 			color: #333;
 		}
 		#booking-section select,
-		#booking-section input,
-		#booking-section textarea,
-		#booking-section button {
+		#booking-section input:not([type="date"]):not([type="time"]):not([type="checkbox"]):not([type="radio"]),
+		#booking-section textarea {
+			/* Standard input styling for most inputs */
 			width: 100%;
 			padding: 0.8rem;
 			border: 1px solid #ccc;
@@ -40,18 +40,40 @@
 			margin-top: 0.5rem;
 			font-size: 1rem;
 		}
-		#booking-section button {
+		/* Specific styling for Date and Time inputs to ensure they take full width */
+		#booking-section input[type="date"],
+		#booking-section input[type="time"] {
+			width: 100%;
+			box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+			padding: 0.8rem;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			margin-top: 0.5rem;
+			font-size: 1rem;
+		}
+
+		#booking-section button,
+		#booking-section a.button { /* Style for buttons and the link styled as a button */
 			background: #f06292;
 			color: white;
 			border: none;
 			cursor: pointer;
 			transition: background 0.3s;
 			margin-top: 1.5rem;
+			/* Shared button styling */
+			width: 100%;
+			padding: 0.8rem;
+			border-radius: 6px;
+			font-size: 1rem;
+			text-align: center;
+			display: block; /* Ensure the link takes full width like a button */
+			text-decoration: none; /* Remove underline from the link */
 		}
-		#booking-section button:hover {
+		#booking-section button:hover,
+		#booking-section a.button:hover {
 			background: #e04579;
 		}
-		.hidden { display: none; }
+		.hidden { display: none !important; } /* Added !important for safety */
 		.summary {
 			background: #fdf2f6;
 			padding: 1rem;
@@ -64,7 +86,6 @@
 <body class="homepage is-preload">
 	<div id="page-wrapper">
 
-		<!-- Header -->
 		<div id="header">
 			<div class="inner">
 				<header>
@@ -77,7 +98,6 @@
 				</footer>
 			</div>
 
-			<!-- Nav -->
 			<nav id="nav">
 				<ul>
 					<li><a href="index.html">HOME</a></li>
@@ -97,7 +117,6 @@
 			</nav>
 		</div>
 
-		<!-- Banner -->
 		<section id="banner">
 			<header>
 				<h2>Welcome to <strong>Lace Done by Fafa</strong>.</h2>
@@ -105,19 +124,17 @@
 			</header>
 		</section>
 
-		<!-- Carousel -->
 		<header>
 			<h3><strong>STYLES</strong></h3>
 		</header>
 		<section class="carousel">
 			<div class="reel">
-				<article><a href="#" class="image featured"><img src="images/lace1.jpg" alt="" /></a></article>
-				<article><a href="#" class="image featured"><img src="images/lace2.jpg" alt="" /></a></article>
-				<article><a href="#" class="image featured"><img src="images/lace3.jpg" alt="" /></a></article>
+				<article><a href="#" class="image featured"><img src="images/lace1.jpg" alt="Lace Install Style 1" /></a></article>
+				<article><a href="#" class="image featured"><img src="images/lace2.jpg" alt="Lace Install Style 2" /></a></article>
+				<article><a href="#" class="image featured"><img src="images/lace3.jpg" alt="Lace Install Style 3" /></a></article>
 			</div>
 		</section>
 
-		<!-- Main -->
 		<div class="wrapper style2">
 			<article id="main" class="container special">
 				<header>
@@ -131,37 +148,26 @@
 			</article>
 		</div>
 
-		<!-- ✨ Booking Segment -->
 		<section id="booking-section">
 			<h2>Book Your Appointment</h2>
 
-			<!-- Step 1 -->
 			<div id="step1" class="section">
 				<label for="service">Select Service:</label>
 				<select id="service">
 					<option value="">-- Choose a service --</option>
-					<option value="frontal">Frontal Install - $85</option>
-				</select>
+					<option value="Frontal Install - $85">Frontal Install - $85</option>
+					</select>
 				<button onclick="nextStep(2)">Next →</button>
 			</div>
 
-			<!-- Step 2 -->
 			<div id="step2" class="hidden">
 				<label for="date">Select Date:</label>
 				<input type="date" id="date" />
 				<label for="time">Select Time:</label>
-				<select id="time">
-					<option value="">-- Choose a time --</option>
-					<option>9:00 AM</option>
-					<option>11:00 AM</option>
-					<option>1:00 PM</option>
-					<option>3:00 PM</option>
-					<option>5:00 PM</option>
-				</select>
+				<input type="time" id="time" />
 				<button onclick="nextStep(3)">Next →</button>
 			</div>
 
-			<!-- Step 3 -->
 			<div id="step3" class="hidden">
 				<label for="name">Full Name:</label>
 				<input type="text" id="name" placeholder="Jane Doe" />
@@ -170,14 +176,12 @@
 				<button onclick="showSummary()">Review Appointment →</button>
 			</div>
 
-			<!-- Step 4 -->
 			<div id="step4" class="hidden">
 				<h3>Confirm Your Appointment</h3>
 				<div class="summary" id="summary"></div>
 				<button onclick="generateCalendarLinks()">Confirm & Add to Calendar</button>
 			</div>
 
-			<!-- Confirmation -->
 			<div id="confirmation" class="hidden">
 				<h3>✅ Appointment Confirmed!</h3>
 				<p>Thank you for booking with Lace Done by Fafa. You can add your appointment to your calendar below:</p>
@@ -186,7 +190,6 @@
 			</div>
 		</section>
 
-		<!-- Footer -->
 		<div id="footer">
 			<div class="container">
 				<hr />
@@ -199,7 +202,6 @@
 		</div>
 	</div>
 
-	<!-- Scripts -->
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/jquery.dropotron.min.js"></script>
 	<script src="assets/js/jquery.scrolly.min.js"></script>
@@ -209,181 +211,135 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Custom Booking Page</title>
-	<style>
-		body { font-family: 'Poppins', sans-serif; background: #f9fafc; margin: 0; padding: 0; }
-		.container { max-width: 600px; margin: 50px auto; background: #fff; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-		.hidden { display: none; }
-		.btn { background: #0078ff; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 10px; }
-		.btn:hover { background: #005bcc; }
-	</style>
-</head>
-<body>
+	<script>
+		// NOTE: This is a dummy SCRIPT_URL. You must replace it with your actual Google Apps Script Web App URL
+		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7o3Em1cjTU_PhVCVinuJrB4j4UviVKVsV9d7JsyvZfARpvOCkGX4bAh6NH0hcHwqXsw/exec"; // Placeholder
 
-	<div class="container">
-		<h2>Book an Appointment</h2>
+		const serviceEl = document.getElementById("service");
+		const dateEl = document.getElementById("date");
+		const timeEl = document.getElementById("time");
+		const nameEl = document.getElementById("name");
+		const notesEl = document.getElementById("notes");
+		const summaryDiv = document.getElementById("summary");
 
-		<!-- Step 1 -->
-		<div id="step1">
-			<label>Service:</label><br>
-			<input id="service" type="text" placeholder="Service Name"><br><br>
-			<label>Date:</label><br>
-			<input id="date" type="date"><br><br>
-			<label>Time:</label><br>
-			<input id="time" type="time"><br><br>
-			<label>Your Name:</label><br>
-			<input id="name" type="text"><br><br>
-			<label>Notes:</label><br>
-			<textarea id="notes" placeholder="Optional"></textarea><br><br>
-			<button class="btn" onclick="showSummary()">Next</button>
-		</div>
+		function nextStep(stepNumber) {
+			// Logic for validation before moving to the next step
+			let isValid = true;
+			let currentStepEl;
 
-		<!-- Step 2 -->
-		<div id="step4" class="hidden">
-			<h3>Confirm Details</h3>
-			<div id="summary"></div>
-			<button class="btn" onclick="generateCalendarLinks()">Confirm Booking</button>
-		</div>
+			switch (stepNumber) {
+				case 2: // Going from Step 1 to Step 2
+					currentStepEl = document.getElementById("step1");
+					if (!serviceEl.value) {
+						alert("Please select a service.");
+						isValid = false;
+					}
+					break;
+				case 3: // Going from Step 2 to Step 3
+					currentStepEl = document.getElementById("step2");
+					if (!dateEl.value || !timeEl.value) {
+						alert("Please select a date and time.");
+						isValid = false;
+					}
+					break;
+				// No need for a case for step 4, as showSummary handles that transition
+			}
 
-		<!-- Confirmation -->
-		<div id="confirmation" class="hidden"></div>
-	</div>
+			if (isValid) {
+				// Hide current step
+				currentStepEl.classList.add("hidden");
+				// Show next step
+				document.getElementById(`step${stepNumber}`).classList.remove("hidden");
+			}
+		}
 
-<!-- Booking Segment -->
-<section id="booking-section">
-  <h2>Book Your Appointment</h2>
+		function showSummary() {
+			// Going from Step 3 to Step 4 (Summary)
+			if (!nameEl.value) {
+				alert("Please enter your full name.");
+				return;
+			}
 
-  <!-- Step 1 -->
-  <div id="step1" class="section">
-    <label for="service">Service:</label>
-    <select id="service">
-      <option value="">-- Choose a service --</option>
-      <option value="Frontal Install">Frontal Install - $85</option>
-    </select>
+			summaryDiv.innerHTML = `
+				<p><strong>Service:</strong> ${serviceEl.value}</p>
+				<p><strong>Date:</strong> ${dateEl.value}</p>
+				<p><strong>Time:</strong> ${timeEl.value}</p>
+				<p><strong>Name:</strong> ${nameEl.value}</p>
+				<p><strong>Notes:</strong> ${notesEl.value || "None"}</p>
+			`;
+			document.getElementById("step3").classList.add("hidden");
+			document.getElementById("step4").classList.remove("hidden");
+		}
 
-    <label for="date">Date:</label>
-    <input type="date" id="date" />
+		function generateCalendarLinks() {
+			const service = serviceEl.value;
+			const date = dateEl.value;
+			const time = timeEl.value;
+			const name = nameEl.value;
+			const notes = notesEl.value;
 
-    <label for="time">Time:</label>
-    <input type="time" id="time" />
+			// --- 1. Google Calendar Link Generation ---
+			const start = new Date(`${date}T${time}`);
+			// Assuming a 60-minute appointment
+			const end = new Date(start.getTime() + 60 * 60 * 1000);
+			const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "");
 
-    <label for="name">Full Name:</label>
-    <input type="text" id="name" />
+			document.getElementById("googleLink").href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service)}&dates=${formatDate(start)}/${formatDate(end)}&details=${encodeURIComponent(notes)}&location=Houston`;
 
-    <label for="notes">Notes (optional):</label>
-    <textarea id="notes"></textarea>
+			// --- 2. Send Booking to Google Apps Script (Backend) ---
+			fetch(SCRIPT_URL, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ service, date, time, name, notes })
+			})
+			.then(res => res.json())
+			.then(data => {
+				// Success or error handling for the backend save
+				if (data.status === "success") {
+					console.log("Booking added to spreadsheet successfully!");
+				} else {
+					console.error("Backend Error:", data);
+					// NOTE: Alerting the user about the backend error
+					// while still confirming the appointment and providing calendar links
+					// as the user's primary action (booking) was completed client-side.
+					alert("Note: There was an issue saving your booking details, but you can still use the calendar links.");
+				}
+			})
+			.catch(err => {
+				console.error("Fetch Error:", err);
+				alert("Note: Failed to communicate with the booking server. Please contact Fafa.");
+			});
 
-    <button onclick="showSummary()">Next →</button>
-  </div>
+			// --- 3. Transition to Confirmation Step ---
+			document.getElementById("step4").classList.add("hidden");
+			document.getElementById("confirmation").classList.remove("hidden");
+		}
 
-  <!-- Step 2: Summary / Confirmation -->
-  <div id="step2" class="hidden">
-    <h3>Confirm Your Appointment</h3>
-    <div id="summary"></div>
-    <button onclick="generateCalendarLinks()">Confirm Booking</button>
-  </div>
+		function generateICS() {
+			// Function to download an ICS file for Apple/Outlook/other calendars
+			const service = serviceEl.value;
+			const date = dateEl.value;
+			const time = timeEl.value;
+			const notes = notesEl.value;
 
-  <!-- Step 3: Success -->
-  <div id="confirmation" class="hidden">
-    <h3>✅ Appointment Confirmed!</h3>
-    <p>Your appointment has been added. Add to your calendar:</p>
-    <a id="googleLink" target="_blank">Add to Google Calendar</a>
-    <button onclick="generateICS()">Add to Apple Calendar</button>
-  </div>
-</section>
-
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7o3Em1cjTU_PhVCVinuJrB4j4UviVKVsV9d7JsyvZfARpvOCkGX4bAh6NH0hcHwqXsw/exec";
-
-const serviceEl = document.getElementById("service");
-const dateEl = document.getElementById("date");
-const timeEl = document.getElementById("time");
-const nameEl = document.getElementById("name");
-const notesEl = document.getElementById("notes");
-const summaryDiv = document.getElementById("summary");
-
-function showSummary() {
-  if (!serviceEl.value || !dateEl.value || !timeEl.value || !nameEl.value) {
-    alert("Please fill all required fields");
-    return;
-  }
-  summaryDiv.innerHTML = `
-    <p><strong>Service:</strong> ${serviceEl.value}</p>
-    <p><strong>Date:</strong> ${dateEl.value}</p>
-    <p><strong>Time:</strong> ${timeEl.value}</p>
-    <p><strong>Name:</strong> ${nameEl.value}</p>
-    <p><strong>Notes:</strong> ${notesEl.value || "None"}</p>
-  `;
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
-}
-
-function generateCalendarLinks() {
-  const service = serviceEl.value;
-  const date = dateEl.value;
-  const time = timeEl.value;
-  const name = nameEl.value;
-  const notes = notesEl.value;
-
-  // Google Calendar link
-  const start = new Date(`${date}T${time}`);
-  const end = new Date(start.getTime() + 60*60*1000);
-  const formatDate = d => d.toISOString().replace(/-|:|\.\d+/g, "");
-  document.getElementById("googleLink").href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service)}&dates=${formatDate(start)}/${formatDate(end)}&details=${encodeURIComponent(notes)}&location=Houston`;
-
-  // Send booking to Apps Script
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ service, date, time, name, notes })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.status === "success") {
-      console.log("Booking added to calendar!");
-    } else {
-      console.error("Error:", data);
-      alert("Error adding booking to calendar.");
-    }
-  })
-  .catch(err => { console.error(err); alert("Failed to add booking to calendar."); });
-
-  document.getElementById("step2").classList.add("hidden");
-  document.getElementById("confirmation").classList.remove("hidden");
-}
-
-function generateICS() {
-  const service = serviceEl.value;
-  const date = dateEl.value;
-  const time = timeEl.value;
-  const notes = notesEl.value;
-
-  const start = new Date(`${date}T${time}`);
-  const end = new Date(start.getTime() + 60*60*1000);
-  const ics = `BEGIN:VCALENDAR
+			const start = new Date(`${date}T${time}`);
+			const end = new Date(start.getTime() + 120 * 60 * 1000); // 120 minutes duration
+			const ics = `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
 SUMMARY:${service}
 DTSTART:${start.toISOString().replace(/[-:]/g,'').split('.')[0]}Z
 DTEND:${end.toISOString().replace(/[-:]/g,'').split('.')[0]}Z
 DESCRIPTION:${notes}
+LOCATION:Houston, TX
 END:VEVENT
 END:VCALENDAR`;
-  const blob = new Blob([ics], {type:"text/calendar"});
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "appointment.ics";
-  link.click();
-}
-</script>
-
+			const blob = new Blob([ics], {type:"text/calendar"});
+			const link = document.createElement("a");
+			link.href = URL.createObjectURL(blob);
+			link.download = "lace_done_by_fafa_appointment.ics";
+			link.click();
+		}
+	</script>
 </body>
 </html>
-
-
-
